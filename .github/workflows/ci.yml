@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install
+        run: python -m pip install -e ".[dev]"
+
+      - name: Test
+        run: pytest
+
+      - name: Lint
+        run: ruff check .
+
+      - name: Build package
+        run: python -m build
+
+      - name: Smoke test CLI
+        run: |
+          reportforge validate examples/acme_authorized_pentest.yaml --strict
+          reportforge metrics examples/acme_authorized_pentest.yaml --json
+          reportforge doctor
+          reportforge export examples/acme_authorized_pentest.yaml --format markdown --output /tmp/report.md
+          reportforge export examples/acme_authorized_pentest.yaml --format html --output /tmp/report.html
+          reportforge export examples/acme_authorized_pentest.yaml --format pdf --output /tmp/report.pdf
+          reportforge export examples/acme_authorized_pentest.yaml --format json --output /tmp/report.json

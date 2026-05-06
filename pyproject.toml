@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "reportforge"
+version = "1.0.0"
+description = "Professional bilingual pentest reporting engine for Markdown, HTML, PDF, and JSON exports."
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+  { name = "ReportForge Contributors" }
+]
+keywords = [
+  "security",
+  "red-team",
+  "ethical-hacking",
+  "reporting",
+  "automation",
+  "opsec",
+  "detection-engineering"
+]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Environment :: Console",
+  "Intended Audience :: Information Technology",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Topic :: Security",
+  "Topic :: System :: Systems Administration"
+]
+dependencies = [
+  "Jinja2>=3.1.3",
+  "pydantic>=2.6.0",
+  "reportlab>=4.2.0",
+  "rich>=13.7.0",
+  "typer>=0.12.0",
+  "PyYAML>=6.0.1"
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.2.0",
+  "ruff>=0.8.0",
+  "pytest>=8.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/lulz-lich/ReportForge"
+Repository = "https://github.com/lulz-lich/ReportForge"
+Issues = "https://github.com/lulz-lich/ReportForge/issues"
+Changelog = "https://github.com/lulz-lich/ReportForge/blob/main/CHANGELOG.md"
+
+[project.scripts]
+reportforge = "reportforge.cli.app:app"
+
+[tool.setuptools.packages.find]
+include = ["reportforge*"]
+
+[tool.setuptools.package-data]
+reportforge = ["templates/*.j2", "py.typed"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-q"

@@ -1,0 +1,132 @@
+# {{ report.title }}
+
+## Executive Summary
+
+- **Client:** {{ report.client }}
+- **Assessment Type:** {{ report.assessment_type }}
+- **Assessment Window:** {{ report.assessment_start }} to {{ report.assessment_end }}
+- **Prepared By:** {{ report.prepared_by }}
+- **Classification:** {{ report.classification.value.title() }}
+- **Report Version:** {{ report.report_version }}
+- **Language:** English
+
+{{ report.executive_summary }}
+
+## Methodology
+
+{{ report.methodology }}
+
+## Limitations
+
+{{ report.limitations }}
+
+## Scope
+
+{% for item in report.scope %}
+- `{{ item }}`
+{% else %}
+- Scope was not provided.
+{% endfor %}
+
+## Rules of Engagement
+
+{% for item in report.rules_of_engagement %}
+- {{ item }}
+{% else %}
+- Rules of engagement were not provided.
+{% endfor %}
+
+## Severity Summary
+
+| Metric | Value |
+| --- | ---: |
+| Total Findings | {{ metrics.total_findings }} |
+| Open Findings | {{ metrics.open_findings }} |
+| Critical/High Open | {{ metrics.critical_or_high_open }} |
+| Remediation Progress | {{ metrics.remediation_progress_percent }}% |
+| Top Priority Score | {{ metrics.top_priority_score }} |
+
+| Severity | Count |
+| --- | ---: |
+{% for severity in severities %}
+| {{ severity_label(severity, report.language.value) }} | {{ severity_counts[severity] }} |
+{% endfor %}
+
+## Finding Status
+
+| Status | Count |
+| --- | ---: |
+{% for status in statuses %}
+| {{ status_label(status, report.language.value) }} | {{ status_counts[status] }} |
+{% endfor %}
+
+## Timeline
+
+{% for event in report.timeline %}
+- **{{ event.date }} - {{ event.title }}:** {{ event.description }}
+{% else %}
+- No timeline events were provided.
+{% endfor %}
+
+## Technical Findings
+
+| ID | Title | Severity | Status | Score |
+| --- | --- | --- | --- | ---: |
+{% for finding in findings %}
+| {{ finding.id }} | {{ finding.title }} | {{ severity_label(finding.severity, report.language.value) }} | {{ status_label(finding.status, report.language.value) }} | {{ risk_score(finding) }} |
+{% else %}
+| - | No findings added | - | - | 0 |
+{% endfor %}
+
+{% for finding in findings %}
+### {{ finding.id }} - {{ finding.title }}
+
+- **Severity:** {{ severity_label(finding.severity, report.language.value) }}
+- **Likelihood:** {{ severity_label(finding.likelihood, report.language.value) }}
+- **Status:** {{ status_label(finding.status, report.language.value) }}
+- **Remediation Effort:** {{ finding.remediation_effort.value.title() }}
+- **Priority Score:** {{ risk_score(finding) }}
+- **Affected Asset:** `{{ finding.affected_asset }}`
+{% if finding.tags %}
+- **Tags:** {{ finding.tags | join(", ") }}
+{% endif %}
+
+**Description**
+
+{{ finding.description }}
+
+**Impact**
+
+{{ finding.impact }}
+
+**Evidence**
+
+{% for item in finding.evidence %}
+- **{{ item.title }}:** {{ item.description }}{% if item.artifact %} (`{{ item.artifact }}`){% endif %}
+{% else %}
+- Evidence was not provided.
+{% endfor %}
+
+**Recommendation**
+
+{{ finding.recommendation }}
+
+**References**
+
+{% for reference in finding.references %}
+- {{ reference }}
+{% else %}
+- No references provided.
+{% endfor %}
+
+{% else %}
+No findings were added to this report.
+{% endfor %}
+
+## Safety Notice
+
+This report is documentation for an authorized assessment. ReportForge does not perform exploitation, scanning, credential collection, persistence, evasion, or destructive activity.
+
+## Conclusion
+
+{{ report.conclusion }}

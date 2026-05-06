@@ -1,0 +1,132 @@
+# {{ report.title }}
+
+## Resumo Executivo
+
+- **Cliente:** {{ report.client }}
+- **Tipo de Avaliacao:** {{ report.assessment_type }}
+- **Periodo da Avaliacao:** {{ report.assessment_start }} a {{ report.assessment_end }}
+- **Preparado Por:** {{ report.prepared_by }}
+- **Classificacao:** {{ report.classification.value.title() }}
+- **Versao do Relatorio:** {{ report.report_version }}
+- **Idioma:** Portugues
+
+{{ report.executive_summary }}
+
+## Metodologia
+
+{{ report.methodology }}
+
+## Limitacoes
+
+{{ report.limitations }}
+
+## Escopo
+
+{% for item in report.scope %}
+- `{{ item }}`
+{% else %}
+- O escopo nao foi informado.
+{% endfor %}
+
+## Regras de Engajamento
+
+{% for item in report.rules_of_engagement %}
+- {{ item }}
+{% else %}
+- As regras de engajamento nao foram informadas.
+{% endfor %}
+
+## Resumo de Severidade
+
+| Metrica | Valor |
+| --- | ---: |
+| Total de Achados | {{ metrics.total_findings }} |
+| Achados Abertos | {{ metrics.open_findings }} |
+| Criticos/Altos Abertos | {{ metrics.critical_or_high_open }} |
+| Progresso de Remediacao | {{ metrics.remediation_progress_percent }}% |
+| Maior Score de Prioridade | {{ metrics.top_priority_score }} |
+
+| Severidade | Quantidade |
+| --- | ---: |
+{% for severity in severities %}
+| {{ severity_label(severity, report.language.value) }} | {{ severity_counts[severity] }} |
+{% endfor %}
+
+## Status dos Achados
+
+| Status | Quantidade |
+| --- | ---: |
+{% for status in statuses %}
+| {{ status_label(status, report.language.value) }} | {{ status_counts[status] }} |
+{% endfor %}
+
+## Linha do Tempo
+
+{% for event in report.timeline %}
+- **{{ event.date }} - {{ event.title }}:** {{ event.description }}
+{% else %}
+- Nenhum evento de linha do tempo foi informado.
+{% endfor %}
+
+## Achados Tecnicos
+
+| ID | Titulo | Severidade | Status | Score |
+| --- | --- | --- | --- | ---: |
+{% for finding in findings %}
+| {{ finding.id }} | {{ finding.title }} | {{ severity_label(finding.severity, report.language.value) }} | {{ status_label(finding.status, report.language.value) }} | {{ risk_score(finding) }} |
+{% else %}
+| - | Nenhum achado adicionado | - | - | 0 |
+{% endfor %}
+
+{% for finding in findings %}
+### {{ finding.id }} - {{ finding.title }}
+
+- **Severidade:** {{ severity_label(finding.severity, report.language.value) }}
+- **Probabilidade:** {{ severity_label(finding.likelihood, report.language.value) }}
+- **Status:** {{ status_label(finding.status, report.language.value) }}
+- **Esforco de Remediacao:** {{ finding.remediation_effort.value.title() }}
+- **Score de Prioridade:** {{ risk_score(finding) }}
+- **Ativo Afetado:** `{{ finding.affected_asset }}`
+{% if finding.tags %}
+- **Tags:** {{ finding.tags | join(", ") }}
+{% endif %}
+
+**Descricao**
+
+{{ finding.description }}
+
+**Impacto**
+
+{{ finding.impact }}
+
+**Evidencia**
+
+{% for item in finding.evidence %}
+- **{{ item.title }}:** {{ item.description }}{% if item.artifact %} (`{{ item.artifact }}`){% endif %}
+{% else %}
+- Nenhuma evidencia foi informada.
+{% endfor %}
+
+**Recomendacao**
+
+{{ finding.recommendation }}
+
+**Referencias**
+
+{% for reference in finding.references %}
+- {{ reference }}
+{% else %}
+- Nenhuma referencia informada.
+{% endfor %}
+
+{% else %}
+Nenhum achado foi adicionado a este relatorio.
+{% endfor %}
+
+## Aviso de Seguranca
+
+Este relatorio documenta uma avaliacao autorizada. O ReportForge nao realiza exploracao, varredura, coleta de credenciais, persistencia, evasao ou atividade destrutiva.
+
+## Conclusao
+
+{{ report.conclusion }}

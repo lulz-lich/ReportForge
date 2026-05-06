@@ -1,0 +1,58 @@
+report_id: acme-relatorio-pentest
+report_version: "1.1"
+title: Relatorio de Teste de Penetracao Autorizado
+client: Acme Health Demo
+language: pt
+classification: confidential
+assessment_type: Teste de Penetracao Web Autorizado
+assessment_start: 2026-04-20
+assessment_end: 2026-04-24
+prepared_by: ReportForge Security Lab
+executive_summary: >
+  Este relatorio documenta uma avaliacao de seguranca autorizada no ambiente
+  demonstrativo da Acme Health. O foco foi melhoria defensiva, documentacao
+  segura de evidencias e orientacao objetiva de remediacao.
+methodology: >
+  A avaliacao utilizou validacao autorizada e nao destrutiva, revisao passiva de
+  metadados disponiveis, casos de teste sinteticos controlados e documentacao segura
+  de evidencias.
+limitations: >
+  Os testes foram limitados aos ativos demonstrativos aprovados e ao periodo definido
+  para a avaliacao.
+conclusion: >
+  A remediacao deve priorizar a padronizacao de configuracoes defensivas e a verificacao
+  continua de desvios.
+scope:
+  - https://portal.demo.acme.example
+  - https://api.demo.acme.example
+rules_of_engagement:
+  - Os testes foram limitados ao ambiente demonstrativo aprovado.
+  - Nenhuma atividade destrutiva, coleta de credenciais, persistencia, evasao ou indisponibilidade foi realizada.
+  - As evidencias foram minimizadas e redigidas antes da geracao do relatorio.
+timeline:
+  - date: 2026-04-20
+    title: Confirmacao de escopo
+    description: Confirmacao dos alvos autorizados, expectativas de entrega e regras de evidencia.
+findings:
+  - id: RF-001
+    title: Cabecalhos de seguranca ausentes no portal demonstrativo
+    severity: low
+    likelihood: medium
+    status: open
+    remediation_effort: low
+    affected_asset: https://portal.demo.acme.example
+    description: >
+      A revisao passiva de respostas HTTP identificou ausencia de cabecalhos de
+      seguranca de navegador no portal demonstrativo.
+    impact: >
+      A ausencia desses cabecalhos reduz a defesa em profundidade no navegador.
+    evidence:
+      - title: Resumo de cabecalhos
+        description: Content-Security-Policy nao estava presente na resposta demonstrativa.
+    recommendation: >
+      Definir uma linha de base de cabecalhos de seguranca e monitorar desvios de configuracao.
+    references:
+      - OWASP Secure Headers Project
+    tags:
+      - web
+      - hardening
